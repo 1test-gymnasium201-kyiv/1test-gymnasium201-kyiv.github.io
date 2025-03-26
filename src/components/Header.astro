@@ -1,0 +1,69 @@
+---
+import schoollogo from "../assets/logo.jpg";
+---
+
+<header class="header">
+  <img src={schoollogo.src}
+             alt="Логотип школи" 
+             class="header-logo">
+  <nav>
+      <ul class="nav-menu">
+          <li><a href="#новини">Новини</a></li>
+          <li><a href="#про-заклад">Інформація про заклад</a></li>
+          <li><a href="#історія">Історія школи</a></li>
+          <li><a href="#контакти">Дистанційне навчання</a></li>
+          <li><a href="#контакти">Освітній процес</a></li>
+          <li><a href="#контакти">Фотогалерея</a></li>
+          <li><a href="#контакти">Відеогалерея</a></li>
+      </ul>
+  </nav>
+</header>
+
+<style>
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f7f7f7;
+  }
+
+  /* Header */
+  .header {
+            background: #ffffff;
+            padding: 15px 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            max-width: 65px;
+            height: auto;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #1f1f1f;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #5f7d8c;
+        }
+</style>

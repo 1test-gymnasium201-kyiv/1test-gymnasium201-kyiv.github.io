@@ -1,0 +1,92 @@
+---
+import schoollogo from "../assets/logo.jpg";
+---
+
+<section class="hero">
+    <img src={schoollogo.src} 
+                 alt="Логотип школи" 
+                 class="hero-logo">
+    <h1>Гімназія №201 м. Києва</h1>
+</section>
+
+<style>
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f7f7f7;
+  }
+
+  /* Hero Section */
+  .hero {
+            background: darkslategrey;
+            background-size: cover;
+            background-position: center;
+            color: white;
+            min-height: 20vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .hero-logo {
+            max-width: 250px;
+            width: 100%;
+            padding-right: 5vh;
+        }
+
+        .hero-text {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 60vh;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-logo {
+                max-width: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+</style>
