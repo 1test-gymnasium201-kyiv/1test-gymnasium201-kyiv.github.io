@@ -1,0 +1,226 @@
+<main id="main">
+</main>
+
+<script>
+    if (isSessionStorageKeyEmpty("site-data")) {
+        fetch(
+            "https://docs.google.com/spreadsheets/d/1sBgHWUrOtOmkpnyz0YQS9VqEFBVWFn57J7GAaqh9Le4/gviz/tq?tqx=out:json&tq&gid=0",
+        )
+            .then((response) => response.text())
+            .then((data) => {
+                data = data.replace("\n", "");
+                data = data.replace(
+                    "/*O_o*/google.visualization.Query.setResponse(",
+                    "",
+                );
+                data = data.slice(0, -2);
+                sessionStorage.setItem("site-data", data);
+            });
+    }
+    var data = sessionStorage.getItem("site-data")!;
+    const urlString = window.location.href;
+    const url = new URL(urlString);
+    const params = new URLSearchParams(url.search);
+    const search_id = params.get("id");
+    var json = JSON.parse(data);
+    var data_array = json["table"]["rows"];
+    var i = 0;
+    var main_area = document.getElementById("main");
+    var data_to_paste = "";
+    var update_divs = false
+    while (i < data_array.length) {
+        if (data_array[i]["c"][0]["v"] == search_id) {
+            data_to_paste +=
+                '<div class="post-grid"><img src="' +
+                data_array[i]["c"][4]["v"] +
+                '"class="main-image"/><div><div class="news-content"><h3 class="news-title">' +
+                data_array[i]["c"][1]["v"] +
+                '</h3><div class="news-date">' +
+                data_array[i]["c"][2]["v"] +
+                "</div><p>" +
+                data_array[i]["c"][3]["v"] +
+                "</p></div></div></div>";
+            if (data_array[i]["c"][5] !== null) {
+                data_to_paste +=
+                    '<div class="w3-display-container w3-content"><h3 class="other-photos-title">Інші фото:</h3>';
+                if (data_array[i]["c"][5]["v"].includes("#")) {
+                    update_divs = true
+                    data_to_paste +=
+                        '<button class="w3-button w3-display-left" id="left_slide">&#10094;</button><button class="w3-button w3-display-right" id="right_slide">&#10095;</button>';
+                    const images = data_array[i]["c"][5]["v"].split("#");
+                    var j = 0;
+                    while (j < images.length) {
+                        data_to_paste +=
+                            '<img class="mySlides" src="' +
+                            images[j] +
+                            '" style="width:100%"/>';
+                        j += 1;
+                    }
+                } else {
+                    data_to_paste +=
+                        '<img class="mySlides" src="' +
+                        data_array[i]["c"][5]["v"] +
+                        '" style="width:100%"/></div>';
+                }
+            }
+            break;
+        }
+        i += 1;
+    }
+    main_area!.innerHTML += data_to_paste;
+
+    function isSessionStorageKeyEmpty(key: string) {
+        try {
+            const value = sessionStorage.getItem(key);
+
+            // Check if the key exists and its value is considered empty
+            return value === null || value === undefined || value === "";
+        } catch (error) {
+            console.error("Error accessing sessionStorage:", error);
+            return true; // Consider it empty in case of an error
+        }
+    }
+
+    const overflowDiv = document.getElementById("main")!;
+
+    function adjustOverflowHeight() {
+        overflowDiv.style.height = overflowDiv.scrollHeight + "px";
+    }
+    adjustOverflowHeight();
+    window.onload = adjustOverflowHeight;
+    window.addEventListener("resize", adjustOverflowHeight);
+
+    var slideIndex = 1;
+    if (update_divs) {
+        showDivs(slideIndex);
+    }
+
+    function plusDivs(n: number) {
+        showDivs((slideIndex += n));
+    }
+
+    function showDivs(n: number) {
+        var i;
+        var x = document.getElementsByClassName(
+            "mySlides",
+        ) as HTMLCollectionOf<HTMLElement>;
+        if (n > x.length) {
+            slideIndex = 1;
+        }
+        if (n < 1) {
+            slideIndex = x.length;
+        }
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        x[slideIndex - 1].style.display = "block";
+    }
+
+    var leftSlideButton = document.getElementById("left_slide")!;
+    leftSlideButton.addEventListener("click", function () {
+        plusDivs(-1);
+    });
+
+    var rightSlideButton = document.getElementById("right_slide")!;
+    rightSlideButton.addEventListener("click", function () {
+        plusDivs(+1);
+    });
+</script>
+
+<style is:global>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Open Sans", sans-serif;
+        font-size: larger;
+        background: #f7f7f7;
+    }
+
+    .main-image {
+        object-fit: contain;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .post-grid {
+        display: grid;
+    }
+
+    main {
+        width: 100%;
+        height: 100%;
+        overflow-y: hidden;
+    }
+
+    main::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Mobile first approach */
+    .post-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(1, 1fr);
+    }
+
+    @media (min-width: 640px) {
+        .post-grid {
+            grid-template-columns: repeat(1, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .post-grid {
+            grid-template-columns: repeat(1, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .post-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(1, 1fr);
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .post-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(1, 1fr);
+        }
+    }
+
+    @media (min-width: 1536px) {
+        .post-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(1, 1fr);
+        }
+    }
+
+    .news-date {
+        color: #5f7d8c;
+        font-family: "Oswald", sans-serif;
+        margin-bottom: 10px;
+    }
+
+    .news-title {
+        font-family: "Oswald", sans-serif;
+        font-size: xx-large;
+        margin-bottom: 15px;
+    }
+
+    .news-content {
+        padding: 20px;
+    }
+
+    .other-photos-title {
+        font-family: "Oswald", sans-serif;
+        font-size: xx-large;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+</style>
