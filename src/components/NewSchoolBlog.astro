@@ -1,8 +1,16 @@
 <main class="news-grid" id="blog_area">
-    
 </main>
 
 <script>
+    function ensureLength(str: string) {
+        const desiredLength = 188;
+        if (str.length > desiredLength) {
+            return str.slice(0, desiredLength) + "...";
+        } else {
+            return str + "...";
+        }
+    }
+
     fetch(
         "https://docs.google.com/spreadsheets/d/1sBgHWUrOtOmkpnyz0YQS9VqEFBVWFn57J7GAaqh9Le4/gviz/tq?tqx=out:json&tq&gid=0",
     )
@@ -21,6 +29,7 @@
             var blog_area = document.getElementById("blog_area");
             var posts_to_paste = "";
             while (i < data_array.length) {
+                var desc = ensureLength(data_array[i]["c"][3]["v"]);
                 posts_to_paste +=
                     '<article class="news-card" id="' +
                     data_array[i]["c"][0]["v"] +
@@ -31,7 +40,7 @@
                     '</div><h3 class="news-title">' +
                     data_array[i]["c"][1]["v"] +
                     "</h3><p>" +
-                    data_array[i]["c"][3]["v"] +
+                    desc +
                     "</p></div></article>";
                 i += 1;
             }
