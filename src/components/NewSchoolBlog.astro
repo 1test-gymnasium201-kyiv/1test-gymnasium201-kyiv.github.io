@@ -2,7 +2,7 @@
 </main>
 
 <script>
-    function ensureLength(str: string) {
+    function ensureLength(str) {
         const desiredLength = 188;
         if (str.length > desiredLength) {
             return str.slice(0, desiredLength) + "...";
@@ -11,51 +11,60 @@
         }
     }
 
-    fetch(
-        "https://docs.google.com/spreadsheets/d/1sBgHWUrOtOmkpnyz0YQS9VqEFBVWFn57J7GAaqh9Le4/gviz/tq?tqx=out:json&tq&gid=0",
-    )
-        .then((response) => response.text())
-        .then((data) => {
-            data = data.replace("\n", "");
-            data = data.replace(
-                "/*O_o*/google.visualization.Query.setResponse(",
-                "",
-            );
-            data = data.slice(0, -2);
-            var json = JSON.parse(data);
-            sessionStorage.setItem("site-data", data);
-            var data_array = json["table"]["rows"];
-            var i = 0;
-            var blog_area = document.getElementById("blog_area");
-            var posts_to_paste = "";
-            while (i < data_array.length) {
-                var desc = ensureLength(data_array[i]["c"][3]["v"]);
-                posts_to_paste +=
-                    '<article class="news-card" id="' +
-                    data_array[i]["c"][0]["v"] +
-                    '"><img src="' +
-                    data_array[i]["c"][4]["v"] +
-                    '" alt="Новина" class="news-image"><div class="news-content"><div class="news-date">' +
-                    data_array[i]["c"][2]["v"] +
-                    '</div><h3 class="news-title">' +
-                    data_array[i]["c"][1]["v"] +
-                    "</h3><p>" +
-                    desc +
-                    "</p></div></article>";
-                i += 1;
+    async function loadBlogPosts() {
+        try {
+            const response = await fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/storage_info.json');
+            const json = await response.json();
+            const blog_area = document.getElementById("blog_area");
+            let posts_to_paste_array = [];
+
+            // Create an array of promises for fetching each post's data
+            const fetchPostPromises = [];
+            for (let i = json['last_post']; i > 0; i--) {
+                fetchPostPromises.push(
+                    fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/' + i + '/post_info.json')
+                        .then(res => res.json())
+                        .then(post_data => {
+                            const desc = ensureLength(post_data['post_text']);
+                            return `
+                                <article class="news-card" id="${i}">
+                                    <img src="https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/${i}/main_image.jpg" alt="Новина" class="news-image">
+                                    <div class="news-content">
+                                        <div class="news-date">${post_data['post_date']}</div>
+                                        <h2 class="news-title">${post_data['post_title']}</h2>
+                                        <p>${desc}</p>
+                                    </div>
+                                </article>
+                            `;
+                        })
+                );
             }
-            blog_area!.innerHTML += posts_to_paste;
+
+            // Wait for all post fetches to complete
+            posts_to_paste_array = await Promise.all(fetchPostPromises);
+
+            // Join the HTML strings and update the DOM once
+            blog_area.innerHTML = posts_to_paste_array.join('');
+
+            // Attach event listeners after the elements are in the DOM
             const postElements = document.querySelectorAll("article");
             postElements.forEach(function (postElement) {
                 postElement.addEventListener("click", function () {
                     const postId = this.id;
-                    const postUrl = `/post/?id=${postId}`;
+                    const postUrl = `/post/?post_id=${postId}`;
                     window.location.href = postUrl;
                 });
             });
-        });
 
-    function move_to_page(selected_id: string) {
+        } catch (error) {
+            console.error("Error loading blog posts:", error);
+        }
+    }
+
+    // Call the async function to load posts when the script executes
+    loadBlogPosts();
+
+    function move_to_page(selected_id) {
         window.alert(selected_id);
     }
 </script>
@@ -107,6 +116,7 @@
 
     .news-title {
         font-family: "Oswald", sans-serif;
+        font-size: 25px;
         margin-bottom: 15px;
     }
 </style>

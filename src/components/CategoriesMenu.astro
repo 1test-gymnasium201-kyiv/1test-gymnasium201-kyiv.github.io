@@ -1,0 +1,97 @@
+<div class="menu-container">
+    <nav>
+        <ul>
+            <li><a href="#administration">Адміністрація</a></li>
+            <li><a href="#pedagogical-staff">Педагогічний колектив</a></li>
+            <li><a href="#innovation-activity">Інноваційна та експериментальна діяльність</a></li>
+            <li><a href="#contacts">Контакти</a></li>
+        </ul>
+    </nav>
+</div>
+
+<style>
+/* Стилі для контейнера меню */
+.menu-container {
+    font-size: medium;
+    background-color: #ffffff; /* Білий фон для меню */
+    border-radius: 12px; /* Округлені кути */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* М'яка тінь */
+    padding: 20px;
+    margin: auto;
+    margin-top: 20px; /* Added margin to the top for distance */
+    width: 90%; /* Використовуємо 90% ширини в'юпорту для адаптивності */
+    min-width: 280px; /* Мінімальна ширина контейнера, щоб уникнути надмірної стиснення */
+    box-sizing: border-box; /* Враховуємо padding у ширину */
+}
+
+/* Стилі для навігаційного меню */
+nav ul {
+    list-style: none; /* Прибираємо маркери списку */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Використовуємо flexbox для кнопок */
+    flex-wrap: wrap; /* Дозволяємо кнопкам переноситись на новий рядок */
+    justify-content: center; /* Центруємо кнопки в рядку */
+    gap: 15px; /* Відстань між кнопками */
+    width: 100%; /* Забезпечуємо, що flex-контейнер займає повну ширину */
+}
+
+nav li {
+    flex: 1; /* Allows items to grow and shrink, distributing space equally */
+    min-width: 250px; /* Set a consistent minimum width for all buttons */
+    max-width: 300px; /* Set a consistent maximum width for all buttons */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+
+/* Стилі для кнопок (посилань) */
+nav a {
+    display: block; /* Робимо посилання блочним елементом */
+    padding: 15px 25px;
+    background-color: #007bff; /* Синій фон кнопок */
+    color: white; /* Білий текст */
+    text-decoration: none; /* Прибираємо підкреслення */
+    border-radius: 8px; /* Округлені кути кнопок */
+    font-size: 1.1em;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Плавний перехід */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Тінь для кнопок */
+    height: 100%; /* Ensure the anchor fills the entire height of its flex item */
+    display: flex; /* Use flexbox to center text vertically if needed */
+    align-items: center; /* Vertically center the text */
+    justify-content: center; /* Horizontally center the text */
+}
+
+/* Стилі при наведенні та фокусі на кнопку */
+nav a:hover,
+nav a:focus {
+    background-color: #0056b3; /* Темніший синій при наведенні */
+    transform: translateY(-3px); /* Невеликий підйом при наведенні */
+    box-shadow: 0 8px 15px rgba(0, 123, 255, 0.3); /* Виразніша тінь */
+}
+
+/* Медіа-запити для адаптивності */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column; /* Кнопки розташовуються вертикально на мобільних */
+        align-items: center; /* Центруємо їх */
+    }
+
+    nav li {
+        width: 100%; /* Повна ширина для кнопок на мобільних */
+        max-width: 300px; /* Обмежуємо ширину на мобільних для кращого вигляду */
+        min-width: unset; /* Remove min-width on mobile to allow max-width to take full effect */
+    }
+
+    .menu-container {
+        padding: 15px;
+        margin-top: 20px; /* Adjust margin-top for smaller screens if needed */
+    }
+
+    nav a {
+        font-size: 1em; /* Зменшуємо розмір шрифту на мобільних */
+        padding: 12px 20px;
+    }
+}
+</style>
