@@ -12,6 +12,21 @@
     }
 
     async function loadBlogPosts() {
+        const urlString = window.location.href;
+        const url = new URL(urlString);
+        const params = new URLSearchParams(url.search);
+        const page_id = params.get("page");
+        if (page_id == null)
+        {
+            // Get the current URL
+            let currentUrl = window.location.href;
+            // Add a query parameter
+            let newUrl = currentUrl + '?page=1';
+            // Navigate to the new URL
+            window.location.href = newUrl;
+        }
+        console.log(page_id)
+
         try {
             const response = await fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/storage_info.json');
             const json = await response.json();
@@ -20,15 +35,17 @@
 
             // Create an array of promises for fetching each post's data
             const fetchPostPromises = [];
-            for (let i = json['last_post']; i > 0; i--) {
+            console.log(json['posts'].length - 1 - ((page_id - 1) * 9))
+                console.log(json['posts'].length - 1 - ((page_id - 1) * 9) - 9)
+            for (let i = json['posts'].length - 1 - ((page_id - 1) * 9); i > json['posts'].length - 1 - ((page_id - 1) * 9) - 9; i--) {
                 fetchPostPromises.push(
-                    fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/' + i + '/post_info.json')
+                    fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/' + json['posts'][i] + '/post_info.json')
                         .then(res => res.json())
                         .then(post_data => {
-                            const desc = ensureLength(post_data['post_text']);
+                            const desc = ensureLength(post_data['post_text'][0]);
                             return `
-                                <article class="news-card" id="${i}">
-                                    <img src="https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/${i}/main_image.jpg" alt="Новина" class="news-image">
+                                <article class="news-card" id="${json['posts'][i]}">
+                                    <img src="https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/${json['posts'][i]}/${post_data['main_image']}" alt="Новина" class="news-image">
                                     <div class="news-content">
                                         <div class="news-date">${post_data['post_date']}</div>
                                         <h2 class="news-title">${post_data['post_title']}</h2>

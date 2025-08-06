@@ -40,7 +40,7 @@
                 '" id="main_image" class="w-full h-auto object-cover rounded-xl"></div>';
             data_to_paste +=
                 '<div class="md:w-1/2 prose prose-lg text-gray-700 leading-relaxed mx-auto md:mx-0">' +
-                json["post_text"] +
+                json["post_text"][0] +
                 "</div></div>";
             if (json["post_images"].length > 0) {
                 data_to_paste +=
