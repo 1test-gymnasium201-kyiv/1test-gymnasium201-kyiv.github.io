@@ -1,6 +1,6 @@
 
 
-    <nav class="flex justify-center items-center space-x-2">
+    <nav class="flex justify-center items-center space-x-2" id="pages_area">
         <button class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -17,6 +17,87 @@
             </svg>
         </button>
     </nav>
+
+<script>
+    const urlString = window.location.href;
+const url = new URL(urlString);
+const params = new URLSearchParams(url.search);
+const page_id = parseInt(params.get("page")) || 1; // За замовчуванням сторінка 1, якщо параметр відсутній
+    
+const response = await fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/storage_info.json');
+const json = await response.json();
+const all_pages = Math.ceil(json['posts'].length / 9);
+const pages_area = document.getElementById("pages_area");
+
+// Очищаємо існуючий вміст, щоб уникнути дублювання
+pages_area.innerHTML = '';
+
+// Кнопка "назад"
+pages_area.innerHTML += `
+<button class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200"
+onclick="changePage(${page_id - 1})"
+${page_id <= 1 ? 'disabled' : ''}>
+<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+</svg>
+</button>`;
+
+// Додаємо кнопку першої сторінки, якщо вона не в діапазоні видимих
+if (page_id > 2) {
+    pages_area.innerHTML += `<a href="?page=1" class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200">1</a>`;
+}
+
+// Додаємо еліпси, якщо поточна сторінка далеко від початку
+if (page_id > 3) {
+    pages_area.innerHTML += `<span class="text-gray-600">...</span>`;
+}
+
+// Генеруємо основні кнопки навколо поточної сторінки
+let start_page = Math.max(1, page_id - 1);
+let end_page = Math.min(all_pages, page_id + 1);
+
+if (page_id <= 2) {
+    end_page = Math.min(all_pages, 3);
+}
+
+if (page_id >= all_pages - 1) {
+    start_page = Math.max(1, all_pages - 2);
+}
+
+for (let i = start_page; i <= end_page; i++) {
+    const isActive = i === page_id;
+    const buttonClass = isActive
+        ? 'w-10 h-10 flex items-center justify-center bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors duration-200'
+        : 'w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200';
+    pages_area.innerHTML += `<a href="?page=${i}" class="${buttonClass}">${i}</a>`;
+}
+
+// Додаємо еліпси, якщо поточна сторінка далеко від кінця
+if (page_id < all_pages - 2) {
+    pages_area.innerHTML += `<span class="text-gray-600">...</span>`;
+}
+
+// Додаємо кнопку останньої сторінки, якщо вона не в діапазоні видимих
+if (page_id < all_pages - 1) {
+    pages_area.innerHTML += `<a href="?page=${all_pages}" class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200">${all_pages}</a>`;
+}
+
+// Кнопка "вперед"
+pages_area.innerHTML += `
+<button class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors duration-200"
+onclick="changePage(${page_id + 1})"
+${page_id >= all_pages ? 'disabled' : ''}>
+<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+</svg>
+</button>`;
+
+function changePage(page) {
+    if (page > 0 && page <= all_pages) {
+        window.location.href = `?page=${page}`;
+    }
+}
+</script>
 
 <style is:global>
     body {

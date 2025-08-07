@@ -25,18 +25,15 @@
             // Navigate to the new URL
             window.location.href = newUrl;
         }
-        console.log(page_id)
 
         try {
             const response = await fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/storage_info.json');
             const json = await response.json();
             const blog_area = document.getElementById("blog_area");
             let posts_to_paste_array = [];
-
+            
             // Create an array of promises for fetching each post's data
             const fetchPostPromises = [];
-            console.log(json['posts'].length - 1 - ((page_id - 1) * 9))
-                console.log(json['posts'].length - 1 - ((page_id - 1) * 9) - 9)
             for (let i = json['posts'].length - 1 - ((page_id - 1) * 9); i > json['posts'].length - 1 - ((page_id - 1) * 9) - 9; i--) {
                 fetchPostPromises.push(
                     fetch('https://raw.githubusercontent.com/1test-gymnasium201-kyiv/news-storage/refs/heads/main/' + json['posts'][i] + '/post_info.json')
